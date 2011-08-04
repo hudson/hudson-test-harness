@@ -1,3 +1,17 @@
+/*******************************************************************************
+ *
+ * Copyright (c) 2004-2010 Oracle Corporation.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     
+ *
+ *******************************************************************************/ 
+
 package hudson.maven;
 
 import org.jvnet.hudson.test.HudsonTestCase;
@@ -10,6 +24,10 @@ import hudson.Launcher;
 import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.tasks.Maven.MavenInstallation;
+
+import org.eclipse.hudson.legacy.maven.plugin.MavenBuild;
+import org.eclipse.hudson.legacy.maven.plugin.MavenModuleSet;
+import org.eclipse.hudson.legacy.maven.plugin.MavenModuleSetBuild;
 
 import java.io.IOException;
 

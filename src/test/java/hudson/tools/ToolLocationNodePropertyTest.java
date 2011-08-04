@@ -1,31 +1,22 @@
-/*
- * The MIT License
+/*******************************************************************************
  *
- * Copyright (c) 2004-2010, Sun Microsystems, Inc., Tom Huybrechts
+ * Copyright (c) 2004-2010 Oracle Corporation.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * Contributors: 
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
+ *    Tom Huybrechts
+ *     
+ *
+ *******************************************************************************/ 
 
 package hudson.tools;
 
 import hudson.Functions;
-import hudson.model.*;
 import hudson.model.labels.LabelAtom;
 import hudson.slaves.DumbSlave;
 import hudson.tasks.Maven;
@@ -35,7 +26,6 @@ import hudson.tasks.Shell;
 import hudson.tasks.Ant.AntInstallation;
 import hudson.tasks.Maven.MavenInstallation;
 import hudson.EnvVars;
-import hudson.maven.MavenModuleSet;
 
 import java.io.IOException;
 
@@ -47,6 +37,14 @@ import org.jvnet.hudson.test.ExtractResourceSCM;
 
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import hudson.model.Build;
+import hudson.model.FreeStyleProject;
+import hudson.model.Hudson;
+import hudson.model.JDK;
+import hudson.model.Result;
+import hudson.model.Run;
+
+import org.eclipse.hudson.legacy.maven.plugin.MavenModuleSet;
 
 /**
  * This class tests that environment variables from node properties are applied,

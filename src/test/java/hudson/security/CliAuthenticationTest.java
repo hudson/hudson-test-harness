@@ -1,6 +1,19 @@
+/*******************************************************************************
+ *
+ * Copyright (c) 2004-2010 Oracle Corporation.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     
+ *
+ *******************************************************************************/ 
+
 package hudson.security;
 
-import hudson.cli.CLI;
 import hudson.cli.CLICommand;
 import hudson.cli.CliManagerImpl;
 import hudson.cli.ClientAuthenticationCache;
@@ -8,6 +21,7 @@ import hudson.cli.LoginCommand;
 import hudson.cli.LogoutCommand;
 import hudson.model.Hudson;
 import org.acegisecurity.Authentication;
+import org.eclipse.hudson.cli.CLI;
 import org.jvnet.hudson.test.For;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.jvnet.hudson.test.TestExtension;

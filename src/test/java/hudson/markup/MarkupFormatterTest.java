@@ -1,3 +1,19 @@
+/*******************************************************************************
+ *
+ * Copyright (c) 2010, CloudBees, Inc.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors: 
+ *
+ *   
+ *       
+ *
+ *******************************************************************************/ 
+
 /*
  * The MIT License
  *
@@ -21,6 +37,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package hudson.markup;
 
 import hudson.security.AuthorizationStrategy.Unsecured;

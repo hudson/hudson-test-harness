@@ -1,36 +1,28 @@
-<?xml version="1.0"?>
-<!--
-The MIT License
+<!-- **************************************************************************
+#
+# Copyright (c) 2004-2009 Oracle Corporation.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors: 
+#
+#    Kohsuke Kawaguchi
+#        
+#
+#************************************************************************** --> 
 
-Copyright (c) 2004-2009, Sun Microsystems, Inc., Kohsuke Kawaguchi
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
--->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <artifactId>hudson</artifactId>
-    <groupId>org.jvnet.hudson.main</groupId>
-    <version>2.1.1-SNAPSHOT</version>
+    <groupId>org.eclipse.hudson.main</groupId>
+    <version>2.1.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.jvnet.hudson.main</groupId>
+  <groupId>org.eclipse.hudson.main</groupId>
   <artifactId>hudson-test-harness</artifactId>
   <packaging>stapler-jar</packaging>
   <name>Hudson :: Test Harness</name>
@@ -64,6 +56,82 @@ THE SOFTWARE.
         </configuration>
       </plugin>
 
+      <!--<plugin>-->
+        <!--&lt;!&ndash; see http://maven-junit-plugin.kenai.com/ for more info &ndash;&gt;-->
+        <!--<groupId>com.sun.maven</groupId>-->
+        <!--<artifactId>maven-junit-plugin</artifactId>-->
+        <!--<version>1.6</version>-->
+        <!--<configuration>-->
+          <!--<skipTests>true</skipTests>-->
+        <!--</configuration>-->
+        <!--<executions>-->
+          <!--<execution>-->
+            <!--<goals>-->
+              <!--<goal>test</goal>-->
+            <!--</goals>-->
+            <!--<configuration>-->
+              <!--<fork>true</fork>-->
+              <!--<concurrency>${concurrency}</concurrency>-->
+              <!--<argLine>-XX:MaxPermSize=192m -Xmx256m -Dfile.encoding=UTF-8</argLine>-->
+              <!--<systemProperties>-->
+                <!--<property>-->
+                  <!--&lt;!&ndash; use AntClassLoader that supports predictable file handle release &ndash;&gt;-->
+                  <!--<name>hudson.ClassicPluginStrategy.useAntClassLoader</name>-->
+                  <!--<value>true</value>-->
+                <!--</property>-->
+                <!--<property>-->
+                  <!--<name>java.util.logging.config.file</name>-->
+                  <!--<value>${basedir}/target/test-classes/jul.properties</value>-->
+                <!--</property>-->
+                <!--<property>-->
+                  <!--<name>hudson.maven.debug</name>-->
+                  <!--<value>${mavenDebug}</value>-->
+                <!--</property>-->
+                <!--<property>-->
+                  <!--<name>java.io.tmpdir</name>-->
+                  <!--<value>${project.build.directory}</value>-->
+                <!--</property> -->
+                <!--<property>-->
+                  <!--<name>buildDirectory</name>-->
+                  <!--<value>${project.build.directory}</value>-->
+                <!--</property>                               -->
+              <!--</systemProperties>-->
+            <!--</configuration>-->
+          <!--</execution>-->
+        <!--</executions>-->
+      <!--</plugin>-->
+
+      <plugin>
+        <groupId>org.kohsuke.gmaven</groupId>
+        <artifactId>gmaven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>preset-packager</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <source>${pom.basedir}/src/main/preset-data/package.groovy</source>
+            </configuration>
+          </execution>
+          <execution>
+            <id>test-in-groovy</id>
+            <!-- allow tests written in Groovy -->
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.8.0</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
       <plugin>
         <groupId>org.kohsuke.stapler</groupId>
         <artifactId>maven-stapler-plugin</artifactId>
@@ -74,7 +142,7 @@ THE SOFTWARE.
   
   <dependencies>
     <dependency>
-      <groupId>org.jvnet.hudson.main</groupId>
+      <groupId>org.eclipse.hudson.main</groupId>
       <artifactId>hudson-test-framework</artifactId>
     </dependency>
 
