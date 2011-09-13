@@ -73,7 +73,7 @@ public class ViewTest extends HudsonTestCase {
 
         WebClient wc = new WebClient();
         HtmlPage userPage = wc.goTo("/user/me");
-        HtmlAnchor privateViewsLink = userPage.getFirstAnchorByText("My Views");
+        HtmlAnchor privateViewsLink = getFirstAnchorByText(userPage, "My Views");
         assertNotNull("My Views link not available", privateViewsLink);
 
         HtmlPage privateViewsPage = (HtmlPage) privateViewsLink.click();

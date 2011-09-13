@@ -38,7 +38,7 @@ public class ManagementLinkTest extends HudsonTestCase {
      */
     public void testLinks() throws Exception {
         HtmlPage page = new WebClient().goTo("manage");
-        List<?> anchors = page.selectNodes("id('management-links')//*[@class='link']/a");
+        List<?> anchors = selectNodes(page, "id('management-links')//*[@class='link']/a");
         assertTrue(anchors.size()>=8);
         for(HtmlAnchor e : (List<HtmlAnchor>) anchors) {
             if(e.getHrefAttribute().endsWith("reload"))

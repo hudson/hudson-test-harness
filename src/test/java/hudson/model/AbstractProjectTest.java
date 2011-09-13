@@ -78,9 +78,9 @@ public class AbstractProjectTest extends HudsonTestCase {
         WebClient webClient = new WebClient();
         HtmlPage page = webClient.getPage(project);
 
-        page = (HtmlPage)page.getFirstAnchorByText("Workspace").click();
-        page = (HtmlPage)page.getFirstAnchorByText("Wipe Out Workspace").click();
-        page = (HtmlPage)((HtmlForm)page.getElementById("confirmation")).submit(null);
+        page = (HtmlPage)getFirstAnchorByText(page, "Workspace").click();
+        page = (HtmlPage)getFirstAnchorByText(page, "Wipe Out Workspace").click();
+        submitForm((HtmlForm)page.getElementById("confirmation"));
 
         assertFalse("Workspace should be gone by now",
                 b.getWorkspace().exists());
@@ -132,9 +132,9 @@ public class AbstractProjectTest extends HudsonTestCase {
         WebClient webClient = new WebClient();
         HtmlPage page = webClient.getPage(hudson.getItem("test0"));
 
-        page = (HtmlPage)page.getFirstAnchorByText("Workspace").click();
+        page = (HtmlPage)getFirstAnchorByText(page, "Workspace").click();
         try {
-            page.getFirstAnchorByText("Wipe Out Workspace");
+            getFirstAnchorByText(page, "Wipe Out Workspace");
             fail("shouldn't find a link");
         } catch (ElementNotFoundException e) {
             // OK

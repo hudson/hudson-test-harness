@@ -61,13 +61,13 @@ public class ConsoleAnnotatorTest extends HudsonTestCase {
 
         // make sure we see the annotation
         HtmlPage rsp = createWebClient().getPage(b, "console");
-        assertEquals(1,rsp.selectNodes("//B[@class='demo']").size());
+        assertEquals(1, selectNodes(rsp, "//B[@class='demo']").size());
 
         // make sure raw console output doesn't include the garbage
         TextPage raw = (TextPage)createWebClient().goTo(b.getUrl()+"consoleText","text/plain");
         System.out.println(raw.getContent());
         LOGGER.log(Level.INFO, raw.getContent());
-        
+
         String nl = System.getProperty("line.separator");
         assertTrue(raw.getContent().contains(nl+"---"+nl+"ooo"+nl+"ooo"+nl));
 
@@ -111,7 +111,7 @@ public class ConsoleAnnotatorTest extends HudsonTestCase {
 
         // make sure we see the annotation
         HtmlPage rsp = createWebClient().getPage(b, "console");
-        assertEquals(1,rsp.selectNodes("//A[@href='http://infradna.com/']").size());
+        assertEquals(1,selectNodes(rsp, "//A[@href='http://infradna.com/']").size());
 
         // make sure raw console output doesn't include the garbage
         TextPage raw = (TextPage)createWebClient().goTo(b.getUrl()+"consoleText","text/plain");

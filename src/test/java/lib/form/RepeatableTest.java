@@ -24,6 +24,8 @@
 package lib.form;
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+import com.gargoylesoftware.htmlunit.html.HtmlButton;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
@@ -66,20 +68,28 @@ public class RepeatableTest extends HudsonTestCase {
     private void doTestSimple() throws Exception {
         HtmlPage p = createWebClient().goTo("self/testSimple");
         HtmlForm f = p.getFormByName("config");
-        f.getButtonByCaption("Add").click();
+        getButtonByCaption(f, "Add").click();
         f.getInputByValue("").setValueAttribute("value one");
-        f.getButtonByCaption("Add").click();
+        getButtonByCaption(f, "Add").click();
         f.getInputByValue("").setValueAttribute("value two");
-        f.getButtonByCaption("Add").click();
+        getButtonByCaption(f, "Add").click();
         f.getInputByValue("").setValueAttribute("value three");
         f.getInputsByName("bool").get(2).click();
         submit(f);
     }
 
+    protected HtmlButton getButtonByCaption(HtmlForm f, String s) {
+        for (HtmlElement b : f.getHtmlElementsByTagName("button")) {
+            if(b.getTextContent().trim().equals(s))
+                return (HtmlButton)b;
+        }
+        return null;
+    }
+
     public void testSimple() throws Exception {
         doTestSimple();
-        assertEquals("[{\"bool\":false,\"txt\":\"value one\"},"
-            + "{\"bool\":false,\"txt\":\"value two\"},{\"bool\":true,\"txt\":\"value three\"}]",
+        assertEquals("[{\"txt\":\"value one\",\"bool\":false},{\"txt\":\"value two\",\"bool\":false},"
+            + "{\"txt\":\"value three\",\"bool\":true}]",
             formData.get("foos").toString());
     }
 
@@ -101,9 +111,9 @@ public class RepeatableTest extends HudsonTestCase {
     public void testSimple_ExistingData() throws Exception {
         addData();
         doTestSimple();
-        assertEquals("[{\"bool\":true,\"txt\":\"existing one\"},"
-            + "{\"bool\":false,\"txt\":\"existing two\"},{\"bool\":true,\"txt\":\"value one\"},"
-            + "{\"bool\":false,\"txt\":\"value two\"},{\"bool\":false,\"txt\":\"value three\"}]",
+        assertEquals("[{\"txt\":\"existing one\",\"bool\":true},{\"txt\":\"existing two\",\"bool\":false},"
+            + "{\"txt\":\"value one\",\"bool\":true},{\"txt\":\"value two\",\"bool\":false},"
+            + "{\"txt\":\"value three\",\"bool\":false}]",
             formData.get("foos").toString());
     }
 
@@ -117,8 +127,8 @@ public class RepeatableTest extends HudsonTestCase {
         try { f.getInputByValue(""); fail("?"); } catch (ElementNotFoundException expected) { }
         f.getInputsByName("bool").get(2).click();
         submit(f);
-        assertEquals("[{\"bool\":false,\"txt\":\"value one\"},"
-            + "{\"bool\":false,\"txt\":\"value two\"},{\"bool\":true,\"txt\":\"value three\"}]",
+        assertEquals("[{\"txt\":\"value one\",\"bool\":false},{\"txt\":\"value two\",\"bool\":false},"
+            + "{\"txt\":\"value three\",\"bool\":true}]",
             formData.get("foos").toString());
     }
 
@@ -131,8 +141,8 @@ public class RepeatableTest extends HudsonTestCase {
         try { f.getInputByValue(""); fail("?"); } catch (ElementNotFoundException expected) { }
         f.getInputsByName("bool").get(1).click();
         submit(f);
-        assertEquals("[{\"bool\":true,\"txt\":\"existing one\"},"
-            + "{\"bool\":true,\"txt\":\"existing two\"},{\"bool\":false,\"txt\":\"new one\"}]",
+        assertEquals("[{\"txt\":\"existing one\",\"bool\":true},{\"txt\":\"existing two\",\"bool\":true},"
+            + "{\"txt\":\"new one\",\"bool\":false}]",
             formData.get("foos").toString());
     }
 
@@ -143,15 +153,14 @@ public class RepeatableTest extends HudsonTestCase {
     public void testRadio() throws Exception {
         HtmlPage p = createWebClient().goTo("self/testRadio");
         HtmlForm f = p.getFormByName("config");
-        f.getButtonByCaption("Add").click();
+        getButtonByCaption(f, "Add").click();
         f.getInputByValue("").setValueAttribute("txt one");
         f.getElementsByAttribute("INPUT", "type", "radio").get(1).click();
-        f.getButtonByCaption("Add").click();
+        getButtonByCaption(f, "Add").click();
         f.getInputByValue("").setValueAttribute("txt two");
         f.getElementsByAttribute("INPUT", "type", "radio").get(3).click();
         submit(f);
-        assertEquals("[{\"radio\":\"two\",\"txt\":\"txt one\"},"
-                     + "{\"radio\":\"two\",\"txt\":\"txt two\"}]",
+        assertEquals("[{\"txt\":\"txt one\",\"radio\":\"two\"},{\"txt\":\"txt two\",\"radio\":\"two\"}]",
                      formData.get("foos").toString());
     }
 
@@ -166,12 +175,12 @@ public class RepeatableTest extends HudsonTestCase {
         list.add(new FooRadio("three", "one"));
         HtmlPage p = createWebClient().goTo("self/testRadio");
         HtmlForm f = p.getFormByName("config");
-        f.getButtonByCaption("Add").click();
+        getButtonByCaption(f, "Add").click();
         f.getInputByValue("").setValueAttribute("txt 4");
         f.getElementsByAttribute("INPUT", "type", "radio").get(7).click();
         submit(f);
-        assertEquals("[{\"radio\":\"one\",\"txt\":\"1\"},{\"radio\":\"two\",\"txt\":\"2\"},"
-                + "{\"radio\":\"one\",\"txt\":\"three\"},{\"radio\":\"two\",\"txt\":\"txt 4\"}]",
+        assertEquals("[{\"txt\":\"1\",\"radio\":\"one\"},{\"txt\":\"2\",\"radio\":\"two\"},"
+            + "{\"txt\":\"three\",\"radio\":\"one\"},{\"txt\":\"txt 4\",\"radio\":\"two\"}]",
                 formData.get("foos").toString());
     }
 
@@ -180,18 +189,18 @@ public class RepeatableTest extends HudsonTestCase {
     public void testRadioBlock() throws Exception {
         HtmlPage p = createWebClient().goTo("self/testRadioBlock");
         HtmlForm f = p.getFormByName("config");
-        f.getButtonByCaption("Add").click();
+        getButtonByCaption(f, "Add").click();
         f.getInputByValue("").setValueAttribute("txt one");
         f.getInputByValue("").setValueAttribute("avalue do not send");
         f.getElementsByAttribute("INPUT", "type", "radio").get(1).click();
         f.getInputByValue("").setValueAttribute("bvalue");
-        f.getButtonByCaption("Add").click();
+        getButtonByCaption(f, "Add").click();
         f.getInputByValue("").setValueAttribute("txt two");
         f.getElementsByAttribute("INPUT", "type", "radio").get(2).click();
         f.getInputByValue("").setValueAttribute("avalue two");
         submit(f);
-        assertEquals("[{\"radio\":{\"b\":\"bvalue\",\"value\":\"two\"},\"txt\":\"txt one\"},"
-                     + "{\"radio\":{\"a\":\"avalue two\",\"value\":\"one\"},\"txt\":\"txt two\"}]",
+        assertEquals("[{\"txt\":\"txt one\",\"radio\":{\"value\":\"two\",\"b\":\"bvalue\"}},"
+            + "{\"txt\":\"txt two\",\"radio\":{\"value\":\"one\",\"a\":\"avalue two\"}}]",
                      formData.get("foos").toString());
     }
 
@@ -245,11 +254,11 @@ public class RepeatableTest extends HudsonTestCase {
     public void testDropdownList() throws Exception {
         HtmlPage p = createWebClient().goTo("self/testDropdownList");
         HtmlForm f = p.getFormByName("config");
-        f.getButtonByCaption("Add").click();
+        getButtonByCaption(f, "Add").click();
         waitForJavaScript(p);
         f.getInputByValue("").setValueAttribute("17"); // seeds
         f.getInputByValue("").setValueAttribute("pie"); // word
-        f.getButtonByCaption("Add").click();
+        getButtonByCaption(f, "Add").click();
         waitForJavaScript(p);
         // select banana in 2nd select element:
         ((HtmlSelect)f.getElementsByTagName("select").get(1)).getOption(1).click();
@@ -309,7 +318,7 @@ public class RepeatableTest extends HudsonTestCase {
     }
 
     private void clickButton(HtmlPage p, HtmlForm f, String caption) throws IOException {
-        f.getButtonByCaption(caption).click();
+        getButtonByCaption(f, caption).click();
         waitForJavaScript(p);
     }
     //TODO fix me
@@ -319,10 +328,10 @@ public class RepeatableTest extends HudsonTestCase {
         try {
             clickButton(p, f, "Add");
             f.getElementsByAttribute("input", "type", "radio").get(1).click(); // outer=two
-            f.getButtonByCaption("Add Moo").click();
+            getButtonByCaption(f, "Add Moo").click();
             waitForJavaScript(p);
             f.getElementsByAttribute("input", "type", "radio").get(2).click(); // inner=inone
-            f.getButtonByCaption("Add").click();
+            getButtonByCaption(f, "Add").click();
             waitForJavaScript(p);
             f.getElementsByAttribute("input", "type", "radio").get(4).click(); // outer=one
             Thread.sleep(500);

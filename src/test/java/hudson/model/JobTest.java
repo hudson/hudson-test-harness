@@ -209,7 +209,7 @@ public class JobTest extends HudsonTestCase {
         // But it posts invalid data so we expect 500 if we have permission, 403 if not
         HtmlPage page = wc.goTo("userContent/post.html");
         try {
-            page.getForms().get(0).submit();
+            submitForm(page.getForms().get(0));
             fail("Expected exception: " + msg);
         } catch (FailingHttpStatusCodeException expected) {
             assertEquals(msg, status, expected.getStatusCode());

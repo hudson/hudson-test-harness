@@ -109,7 +109,7 @@ public class HudsonTest extends HudsonTestCase {
         FreeStyleProject p = createFreeStyleProject();
         Page jobPage = search(p.getName());
 
-        URL url = jobPage.getWebResponse().getUrl();
+        URL url = jobPage.getWebResponse().getWebRequest().getUrl();
         System.out.println(url);
         assertTrue(url.getPath().endsWith("/job/"+p.getName()+"/"));
     }
@@ -120,7 +120,7 @@ public class HudsonTest extends HudsonTestCase {
     public void testBreadcrumb() throws Exception {
         HtmlPage root = new WebClient().goTo("");
         HtmlElement navbar = root.getElementById("left-top-nav");
-        assertEquals(1,navbar.selectNodes("a").size());
+        assertEquals(1, selectNodes(navbar, "a").size());
     }
 
     /**

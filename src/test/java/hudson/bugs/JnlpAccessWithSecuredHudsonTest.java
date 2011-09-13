@@ -70,12 +70,12 @@ public class JnlpAccessWithSecuredHudsonTest extends HudsonTestCase {
 
         // parse the JNLP page into DOM to list up the jars.
         XmlPage jnlp = (XmlPage) wc.goTo("computer/test/slave-agent.jnlp","application/x-java-jnlp-file");
-        URL baseUrl = jnlp.getWebResponse().getUrl();
+        URL baseUrl = jnlp.getWebResponse().getWebRequest().getUrl();
         Document dom = new DOMReader().read(jnlp.getXmlDocument());
         for( Element jar : (List<Element>)dom.selectNodes("//jar") ) {
             URL url = new URL(baseUrl,jar.attributeValue("href"));
             System.out.println(url);
-            
+
             // now make sure that these URLs are unprotected
             Page jarResource = jnlpAgent.getPage(url);
             assertTrue(jarResource.getWebResponse().getContentType().toLowerCase(Locale.ENGLISH).startsWith("application/"));

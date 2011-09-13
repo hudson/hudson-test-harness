@@ -52,7 +52,7 @@ public class TooManyJobsButNoViewTest extends HudsonTestCase {
         assertNotNull(f);
 
         // this should take us to the new view page
-        URL url = submit(f,"yes").getWebResponse().getUrl();
+        URL url = submit(f,"yes").getWebResponse().getWebRequest().getUrl();
         assertTrue(url.toExternalForm(),url.toExternalForm().endsWith("/newView"));
 
         // since we didn't create a view, if we go back, we should see the warning again

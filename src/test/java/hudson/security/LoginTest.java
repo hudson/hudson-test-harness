@@ -27,7 +27,7 @@ public class LoginTest extends HudsonTestCase {
 
     private void verifyNotError(WebClient wc) throws IOException, SAXException {
         HtmlPage p = wc.goTo("loginError");
-        URL url = p.getWebResponse().getUrl();
+        URL url = p.getWebResponse().getWebRequest().getUrl();
         System.out.println(url);
         assertFalse(url.toExternalForm().contains("login"));
     }

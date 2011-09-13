@@ -55,7 +55,7 @@ public class LoginRedirectTest extends HudsonTestCase {
         HtmlForm form = p.getFormByName("login");
         form.getInputByName("j_username").setValueAttribute("alice");
         form.getInputByName("j_password").setValueAttribute("alice");
-        p = (HtmlPage) form.submit(null);
+        p = (HtmlPage) submitForm(form);
 
         System.out.println(p);
     }

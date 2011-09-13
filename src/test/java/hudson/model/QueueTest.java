@@ -157,7 +157,7 @@ public class QueueTest extends HudsonTestCase {
             HtmlForm f = p.getFormByName("main");
             HtmlFileInput input = (HtmlFileInput) f.getInputByName("test");
             input.setData(testData);
-            f.submit();
+            submitForm(f);
         } finally {
             server.stop();
         }

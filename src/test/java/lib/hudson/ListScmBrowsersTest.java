@@ -29,7 +29,7 @@ public class ListScmBrowsersTest extends HudsonTestCase {
 
     private void check(Item p) throws IOException, SAXException {
         HtmlPage page = new WebClient().getPage(p, "configure");
-        List<HtmlSelect> selects = page.selectNodes("//select");
+        List<HtmlSelect> selects = selectNodes(page, "//select");
         assertTrue(selects.size()>0);
         for (HtmlSelect select : selects) {
             Set<String> title = new HashSet<String>();

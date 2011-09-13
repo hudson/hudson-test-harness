@@ -38,7 +38,7 @@ public class HelpLinkTest extends HudsonTestCase {
     }
 
     private void clickAllHelpLinks(HtmlPage p) throws Exception {
-        List<?> helpLinks = p.selectNodes("//a[@class='help-button']");
+        List<?> helpLinks = selectNodes(p, "//a[@class='help-button']");
         assertTrue(helpLinks.size()>0);
         System.out.println("Clicking "+helpLinks.size()+" help links");
 

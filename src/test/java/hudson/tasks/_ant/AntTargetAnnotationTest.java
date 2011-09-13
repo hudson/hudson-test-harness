@@ -7,7 +7,6 @@ import hudson.model.FreeStyleProject;
 import hudson.tasks.Ant;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.jvnet.hudson.test.SingleFileSCM;
-import org.mozilla.javascript.tools.debugger.Dim;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -27,7 +26,7 @@ public class AntTargetAnnotationTest extends HudsonTestCase {
             System.out.println(c.asText());
 
             HtmlElement o = c.getElementById("console-outline");
-            assertEquals(2,o.selectNodes(".//LI").size());
+            assertEquals(2,selectNodes(o, ".//LI").size());
         } finally {
             AntTargetNote.ENABLED = false;
         }

@@ -153,7 +153,7 @@ public class TestResultPublishingTest extends HudsonTestCase {
         // We expect to see one failure, for com.yahoo.breakable.misc.UglyTest.becomeUglier
         // which should link to http://localhost:8080/job/wonky/3/testReport/org.jvnet.hudson.examples.small/MiscTest/testEleanor/
         assertXPathResultsContainText(buildPage, "//a", "org.jvnet.hudson.examples.small.MiscTest.testEleanor");
-        HtmlAnchor failingTestLink = buildPage.getFirstAnchorByText("org.jvnet.hudson.examples.small.MiscTest.testEleanor");
+        HtmlAnchor failingTestLink = getFirstAnchorByText(buildPage, "org.jvnet.hudson.examples.small.MiscTest.testEleanor");
         assertNotNull(failingTestLink);
         Page failingTestPage = failingTestLink.click();
         assertGoodStatus(failingTestPage);
