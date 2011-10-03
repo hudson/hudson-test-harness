@@ -87,13 +87,13 @@ public class AbstractProjectTest extends HudsonTestCase {
     }
 
     @Bug(8950)
-    public void testMissingWorkspaceGives200() throws Exception {
+    public void testMissingWorkspaceGives404() throws Exception {
         FreeStyleProject project = createFreeStyleProject();
         assertNull(project.getSomeWorkspace());
         WebClient webClient = new WebClient();
         webClient.setThrowExceptionOnFailingStatusCode(false);
         HtmlPage page = webClient.getPage(project, "ws/some/file");
-        assertEquals(200, page.getWebResponse().getStatusCode());
+        assertEquals(404, page.getWebResponse().getStatusCode());
     }
 
     /**
