@@ -55,7 +55,7 @@ public class MailerTest extends HudsonTestCase {
         project.getBuildersList().add(new FailureBuilder());
         Mailer m = new Mailer();
         m.recipients = recipient;
-        project.getPublishersList().add(m);
+        project.addPublisher(m);
 
         project.scheduleBuild2(0).get();
 
@@ -92,7 +92,7 @@ public class MailerTest extends HudsonTestCase {
 
     private void verifyRoundtrip(Mailer m) throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        p.getPublishersList().add(m);
+        p.addPublisher(m);
         submit(new WebClient().getPage(p,"configure").getFormByName("config"));
         assertEqualBeans(m,p.getPublishersList().get(Mailer.class),"recipients,dontNotifyEveryUnstableBuild,sendToIndividuals");
     }
