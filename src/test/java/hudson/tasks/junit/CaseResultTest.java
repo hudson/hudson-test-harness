@@ -216,7 +216,7 @@ public class CaseResultTest extends HudsonTestCase {
                 return true;
             }
         });
-        p.getPublishersList().add(new JUnitResultArchiver("*.xml"));
+        p.addPublisher(new JUnitResultArchiver("*.xml"));
         return assertBuildStatus(Result.UNSTABLE, p.scheduleBuild2(0).get());
     }
 

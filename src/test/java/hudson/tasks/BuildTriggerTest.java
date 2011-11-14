@@ -29,6 +29,7 @@ import hudson.maven.MavenModuleSet;
 import hudson.maven.MavenModuleSetBuild;
 import hudson.model.Build;
 import hudson.model.FreeStyleProject;
+import hudson.model.Hudson;
 import hudson.model.Result;
 import hudson.model.Run;
 import org.jvnet.hudson.test.ExtractResourceSCM;
@@ -48,10 +49,10 @@ public class BuildTriggerTest extends HudsonTestCase {
         WebClient webClient = new WebClient();
         HtmlPage page = webClient.getPage(dp,"configure");
         HtmlForm form = page.getFormByName("config");
-        form.getInputByName("hasCustomQuietPeriod").click();
-        form.getInputByName("quiet_period").setValueAttribute("0");
+        form.getInputByName("hasQuietPeriod").click();
+        form.getInputByName("quiet_period").setValueAttribute("1");
         submit(form);
-        assertEquals("set quiet period", 0, dp.getQuietPeriod());
+        assertEquals("set quiet period", 1, dp.getQuietPeriod());
 
         return dp;
     }
@@ -60,7 +61,7 @@ public class BuildTriggerTest extends HudsonTestCase {
             Result dontTriggerResult) throws Exception {
         FreeStyleProject p = createFreeStyleProject(),
                 dp = createDownstreamProject();
-        p.getPublishersList().add(new BuildTrigger("downstream", evenWhenUnstable));
+        p.addPublisher(new BuildTrigger("downstream", evenWhenUnstable));
         p.getBuildersList().add(new MockBuilder(dontTriggerResult));
         hudson.rebuildDependencyGraph();
 

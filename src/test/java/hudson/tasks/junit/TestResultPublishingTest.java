@@ -57,7 +57,7 @@ public class TestResultPublishingTest extends HudsonTestCase {
         super.setUp();
         project = createFreeStyleProject(BASIC_TEST_PROJECT);
         archiver = new JUnitResultArchiver("*.xml");
-        project.getPublishersList().add(archiver);
+        project.addPublisher(archiver);
         project.getBuildersList().add(new TouchBuilder());
     }
 

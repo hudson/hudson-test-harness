@@ -23,7 +23,7 @@ public class MatrixProjectDependencyTest extends HudsonTestCase {
 	public void testMatrixProjectTriggersDependencies() throws Exception {
 		MatrixProject matrixProject = createMatrixProject();
 		FreeStyleProject freestyleProject = createFreeStyleProject();
-		matrixProject.getPublishersList().add(new BuildTrigger(freestyleProject.getName(), false));
+		matrixProject.addPublisher(new BuildTrigger(freestyleProject.getName(), false));
 		
 		hudson.rebuildDependencyGraph();
 		
