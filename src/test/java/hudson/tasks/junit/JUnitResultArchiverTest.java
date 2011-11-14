@@ -51,7 +51,7 @@ public class JUnitResultArchiverTest extends HudsonTestCase {
 		super.setUp();
 		project = createFreeStyleProject("junit");
 		archiver = new JUnitResultArchiver("*.xml");
-		project.getPublishersList().add(archiver);
+		project.addPublisher(archiver);
 		
 		project.getBuildersList().add(new TouchBuilder());
 	}
