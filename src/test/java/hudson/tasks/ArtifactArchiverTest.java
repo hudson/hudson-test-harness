@@ -124,7 +124,8 @@ public class ArtifactArchiverTest extends HudsonTestCase {
     public void testEmptyDirectories() throws Exception {
         FreeStyleProject project = createFreeStyleProject();
         Publisher artifactArchiver = new ArtifactArchiver("dir/", "", false);
-        project.getPublishersList().replaceBy(Collections.singleton(artifactArchiver));
+        project.removePublisher(artifactArchiver.getDescriptor());
+        project.addPublisher(artifactArchiver);
         project.getBuildersList().replaceBy(Collections.singleton(new TestBuilder() {
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
                 FilePath dir = build.getWorkspace().child("dir");
