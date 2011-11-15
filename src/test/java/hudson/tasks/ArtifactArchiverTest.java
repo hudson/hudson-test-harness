@@ -48,7 +48,8 @@ public class ArtifactArchiverTest extends HudsonTestCase {
 
     public void testSuccessVsFailure() throws Exception {
         FreeStyleProject project = createFreeStyleProject();
-        project.getPublishersList().replaceBy(Collections.singleton(new ArtifactArchiver("f", "", true)));
+        Publisher publisher = new ArtifactArchiver("f", "", true);
+        project.addPublisher(publisher);
         assertEquals("(no artifacts)", Result.FAILURE, build(project)); // #1
         assertFalse(project.getBuildByNumber(1).getHasArtifacts());
         project.getBuildersList().replaceBy(Collections.singleton(new CreateArtifact()));
@@ -86,12 +87,13 @@ public class ArtifactArchiverTest extends HudsonTestCase {
     @Bug(2417)
     public void testStableVsUnstable() throws Exception {
         FreeStyleProject project = createFreeStyleProject();
-        Publisher artifactArchiver = new ArtifactArchiver("f", "", true);
-        project.getPublishersList().replaceBy(Collections.singleton(artifactArchiver));
+        Publisher publisher = new ArtifactArchiver("f", "", true);
+        project.addPublisher(publisher);
         project.getBuildersList().replaceBy(Collections.singleton(new CreateArtifact()));
         assertEquals(Result.SUCCESS, build(project)); // #1
         assertTrue(project.getBuildByNumber(1).getHasArtifacts());
-        project.getPublishersList().replaceBy(Arrays.asList(artifactArchiver, new TestsFail()));
+        Publisher failPublisher = new TestsFail();
+        project.addPublisher(failPublisher);
         assertEquals(Result.UNSTABLE, build(project)); // #2
         assertTrue(project.getBuildByNumber(1).getHasArtifacts());
         assertTrue(project.getBuildByNumber(2).getHasArtifacts());
@@ -104,7 +106,7 @@ public class ArtifactArchiverTest extends HudsonTestCase {
         assertFalse(project.getBuildByNumber(2).getHasArtifacts());
         assertTrue(project.getBuildByNumber(3).getHasArtifacts());
         assertTrue(project.getBuildByNumber(4).getHasArtifacts());
-        project.getPublishersList().replaceBy(Collections.singleton(artifactArchiver));
+        project.removePublisher(failPublisher.getDescriptor());
         assertEquals(Result.SUCCESS, build(project)); // #5
         assertTrue(project.getBuildByNumber(1).getHasArtifacts());
         assertFalse(project.getBuildByNumber(2).getHasArtifacts());
