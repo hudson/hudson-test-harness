@@ -20,7 +20,7 @@ import hudson.cli.ClientAuthenticationCache;
 import hudson.cli.LoginCommand;
 import hudson.cli.LogoutCommand;
 import hudson.model.Hudson;
-import org.acegisecurity.Authentication;
+import org.springframework.security.Authentication;
 import org.eclipse.hudson.cli.CLI;
 import org.jvnet.hudson.test.For;
 import org.jvnet.hudson.test.HudsonTestCase;

@@ -15,11 +15,11 @@ package hudson.security
 
 import org.jvnet.hudson.test.HudsonTestCase
 import hudson.security.LDAPSecurityRealm.LDAPUserDetailsService
-import org.acegisecurity.ldap.LdapUserSearch
-import org.acegisecurity.userdetails.ldap.LdapUserDetailsImpl
+import org.springframework.security.ldap.LdapUserSearch
+import org.springframework.security.userdetails.ldap.LdapUserDetailsImpl
 import javax.naming.directory.BasicAttributes
-import org.acegisecurity.providers.ldap.LdapAuthoritiesPopulator
-import org.acegisecurity.GrantedAuthority
+import org.springframework.security.providers.ldap.LdapAuthoritiesPopulator
+import org.springframework.security.GrantedAuthority
 
 /**
  *
