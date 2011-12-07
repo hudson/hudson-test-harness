@@ -41,8 +41,7 @@ public class DependencyGraphTest extends HudsonTestCase {
         Project p = createFreeStyleProject(),
             down1 = createFreeStyleProject(), down2 = createFreeStyleProject();
         // Add one standard downstream job:
-        p.getPublishersList().add(
-                new BuildTrigger(Collections.singletonList(down1), Result.SUCCESS));
+        p.addPublisher(new BuildTrigger(Collections.singletonList(down1), Result.SUCCESS));
         // Add one downstream job with custom Dependency impl:
         p.getBuildersList().add(new TestDeclarer(Result.UNSTABLE, down2));
         hudson.rebuildDependencyGraph();

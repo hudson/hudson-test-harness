@@ -117,7 +117,7 @@ public class MavenProjectTest extends HudsonTestCase {
     @Bug(6779)
     public void testDeleteSetBuildDeletesModuleBuilds() throws Exception {
         MavenModuleSet project = createProject("maven-multimod.zip");
-        project.setGoals("package");
+        project.setGoals("install");
         buildAndAssertSuccess(project);
         buildAndAssertSuccess(project.getModule("org.jvnet.hudson.main.test.multimod:moduleB"));
         buildAndAssertSuccess(project);

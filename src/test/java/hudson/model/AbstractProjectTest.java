@@ -79,6 +79,17 @@ public class AbstractProjectTest extends HudsonTestCase {
                 b.getWorkspace().exists());
     }
 
+
+    @Bug(8950)
+    public void testMissingWorkspaceGives404() throws Exception {
+        FreeStyleProject project = createFreeStyleProject();
+        assertNull(project.getSomeWorkspace());
+        WebClient webClient = new WebClient();
+        webClient.setThrowExceptionOnFailingStatusCode(false);
+        HtmlPage page = webClient.getPage(project, "ws/some/file");
+        assertEquals(404, page.getWebResponse().getStatusCode());
+    }
+
     /**
      * Makes sure that the workspace deletion is protected.
      */
@@ -142,7 +153,7 @@ public class AbstractProjectTest extends HudsonTestCase {
     @Bug(4423)
     public void testConfiguringBlockBuildWhenUpstreamBuildingRoundtrip() throws Exception {
         FreeStyleProject p = createFreeStyleProject();        
-        p.blockBuildWhenUpstreamBuilding = false;
+        p.setBlockBuildWhenUpstreamBuilding(false);
         
         HtmlForm form = new WebClient().getPage(p, "configure").getFormByName("config");
         HtmlInput input = form.getInputByName("blockBuildWhenUpstreamBuilding");
@@ -150,7 +161,7 @@ public class AbstractProjectTest extends HudsonTestCase {
         
         input.setChecked(true);
         submit(form);        
-        assertTrue("blockBuildWhenUpstreamBuilding was not updated from configuration form", p.blockBuildWhenUpstreamBuilding);
+        assertTrue("blockBuildWhenUpstreamBuilding was not updated from configuration form", p.blockBuildWhenUpstreamBuilding());
         
         form = new WebClient().getPage(p, "configure").getFormByName("config");
         input = form.getInputByName("blockBuildWhenUpstreamBuilding");
@@ -212,66 +223,4 @@ public class AbstractProjectTest extends HudsonTestCase {
         }
     }
 
-    @Bug(1986)
-    public void testBuildSymlinks() throws Exception {
-        // If we're on Windows, don't bother doing this.
-        if (Functions.isWindows())
-            return;
-
-        FreeStyleProject job = createFreeStyleProject();
-        job.getBuildersList().add(new Shell("echo \"Build #$BUILD_NUMBER\"\n"));
-        FreeStyleBuild build = job.scheduleBuild2(0, new Cause.UserCause()).get();
-        File lastSuccessful = new File(job.getRootDir(), "lastSuccessful"),
-             lastStable = new File(job.getRootDir(), "lastStable");
-        // First build creates links
-        assertSymlinkForBuild(lastSuccessful, 1);
-        assertSymlinkForBuild(lastStable, 1);
-        FreeStyleBuild build2 = job.scheduleBuild2(0, new Cause.UserCause()).get();
-        // Another build updates links
-        assertSymlinkForBuild(lastSuccessful, 2);
-        assertSymlinkForBuild(lastStable, 2);
-        // Delete latest build should update links
-        build2.delete();
-        assertSymlinkForBuild(lastSuccessful, 1);
-        assertSymlinkForBuild(lastStable, 1);
-        // Delete all builds should remove links
-        build.delete();
-        assertFalse("lastSuccessful link should be removed", lastSuccessful.exists());
-        assertFalse("lastStable link should be removed", lastStable.exists());
-    }
-
-    private static void assertSymlinkForBuild(File file, int buildNumber)
-            throws IOException, InterruptedException {
-        assertTrue("should exist and point to something that exists", file.exists());
-        assertTrue("should be symlink", Util.isSymlink(file));
-        String s = FileUtils.readFileToString(new File(file, "log"));
-        assertTrue("link should point to build #" + buildNumber + ", but link was: "
-                   + Util.resolveSymlink(file, TaskListener.NULL) + "\nand log was:\n" + s,
-                   s.contains("Build #" + buildNumber + "\n"));
-    }
-
-    @Bug(2543)
-    public void testSymlinkForPostBuildFailure() throws Exception {
-        // If we're on Windows, don't bother doing this.
-        if (Functions.isWindows())
-            return;
-
-        // Links should be updated after post-build actions when final build result is known
-        FreeStyleProject job = createFreeStyleProject();
-        job.getBuildersList().add(new Shell("echo \"Build #$BUILD_NUMBER\"\n"));
-        FreeStyleBuild build = job.scheduleBuild2(0, new Cause.UserCause()).get();
-        assertEquals(Result.SUCCESS, build.getResult());
-        File lastSuccessful = new File(job.getRootDir(), "lastSuccessful"),
-             lastStable = new File(job.getRootDir(), "lastStable");
-        // First build creates links
-        assertSymlinkForBuild(lastSuccessful, 1);
-        assertSymlinkForBuild(lastStable, 1);
-        // Archive artifacts that don't exist to create failure in post-build action
-        job.getPublishersList().add(new ArtifactArchiver("*.foo", "", false));
-        build = job.scheduleBuild2(0, new Cause.UserCause()).get();
-        assertEquals(Result.FAILURE, build.getResult());
-        // Links should not be updated since build failed
-        assertSymlinkForBuild(lastSuccessful, 1);
-        assertSymlinkForBuild(lastStable, 1);
-    }
 }

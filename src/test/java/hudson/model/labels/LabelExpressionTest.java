@@ -20,6 +20,7 @@ import antlr.ANTLRException;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.AppointedNode;
 import hudson.model.BuildListener;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
@@ -155,13 +156,8 @@ public class LabelExpressionTest extends HudsonTestCase {
         assertEquals("abc def",p.getAssignedLabel().getName());
         assertEquals("\"abc def\"",p.getAssignedLabel().getExpression());
 
-        // expression should be persisted, not the name
-        Field f = AbstractProject.class.getDeclaredField("assignedNode");
-        f.setAccessible(true);
-        assertEquals("\"abc def\"",f.get(p));
-
         // but if the name is set, we'd still like to parse it
-        f.set(p,"a:b c");
+        p.setAppointedNode(new AppointedNode("a:b c", false));
         assertEquals("a:b c",p.getAssignedLabel().getName());
     }
 

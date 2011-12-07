@@ -33,6 +33,7 @@ import hudson.ExtensionPoint;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.model.Hudson;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -71,9 +72,15 @@ public class RepeatableTest extends HudsonTestCase {
 
     public void testSimple() throws Exception {
         doTestSimple();
-        assertEquals("[{\"bool\":false,\"txt\":\"value one\"},"
-            + "{\"bool\":false,\"txt\":\"value two\"},{\"bool\":true,\"txt\":\"value three\"}]",
-            formData.get("foos").toString());
+        JSONArray array = formData.getJSONArray("foos");
+        assertEquals("value one", array.getJSONObject(0).get("txt"));
+        assertEquals(false, array.getJSONObject(0).get("bool"));
+
+        assertEquals("value two", array.getJSONObject(1).get("txt"));
+        assertEquals(false, array.getJSONObject(1).get("bool"));
+
+        assertEquals("value three", array.getJSONObject(2).get("txt"));
+        assertEquals(true, array.getJSONObject(2).get("bool"));
     }
 
     // ========================================================================
@@ -94,10 +101,23 @@ public class RepeatableTest extends HudsonTestCase {
     public void testSimple_ExistingData() throws Exception {
         addData();
         doTestSimple();
-        assertEquals("[{\"bool\":true,\"txt\":\"existing one\"},"
-            + "{\"bool\":false,\"txt\":\"existing two\"},{\"bool\":true,\"txt\":\"value one\"},"
-            + "{\"bool\":false,\"txt\":\"value two\"},{\"bool\":false,\"txt\":\"value three\"}]",
-            formData.get("foos").toString());
+
+        JSONArray array = formData.getJSONArray("foos");
+
+        assertEquals("existing one", array.getJSONObject(0).get("txt"));
+        assertEquals(true, array.getJSONObject(0).get("bool"));
+
+        assertEquals("existing two", array.getJSONObject(1).get("txt"));
+        assertEquals(false, array.getJSONObject(1).get("bool"));
+
+        assertEquals("value one", array.getJSONObject(2).get("txt"));
+        assertEquals(true, array.getJSONObject(2).get("bool"));
+
+        assertEquals("value two", array.getJSONObject(3).get("txt"));
+        assertEquals(false, array.getJSONObject(3).get("bool"));
+
+        assertEquals("value three", array.getJSONObject(4).get("txt"));
+        assertEquals(false, array.getJSONObject(4).get("bool"));
     }
 
     public void testMinimum() throws Exception {
@@ -110,9 +130,16 @@ public class RepeatableTest extends HudsonTestCase {
         try { f.getInputByValue(""); fail("?"); } catch (ElementNotFoundException expected) { }
         f.getInputsByName("bool").get(2).click();
         submit(f);
-        assertEquals("[{\"bool\":false,\"txt\":\"value one\"},"
-            + "{\"bool\":false,\"txt\":\"value two\"},{\"bool\":true,\"txt\":\"value three\"}]",
-            formData.get("foos").toString());
+
+        JSONArray array = formData.getJSONArray("foos");
+        assertEquals("value one", array.getJSONObject(0).get("txt"));
+        assertEquals(false, array.getJSONObject(0).get("bool"));
+
+        assertEquals("value two", array.getJSONObject(1).get("txt"));
+        assertEquals(false, array.getJSONObject(1).get("bool"));
+
+        assertEquals("value three", array.getJSONObject(2).get("txt"));
+        assertEquals(true, array.getJSONObject(2).get("bool"));
     }
 
     public void testMinimum_ExistingData() throws Exception {
@@ -124,9 +151,17 @@ public class RepeatableTest extends HudsonTestCase {
         try { f.getInputByValue(""); fail("?"); } catch (ElementNotFoundException expected) { }
         f.getInputsByName("bool").get(1).click();
         submit(f);
-        assertEquals("[{\"bool\":true,\"txt\":\"existing one\"},"
-            + "{\"bool\":true,\"txt\":\"existing two\"},{\"bool\":false,\"txt\":\"new one\"}]",
-            formData.get("foos").toString());
+
+        JSONArray array = formData.getJSONArray("foos");
+        assertEquals("existing one", array.getJSONObject(0).get("txt"));
+        assertEquals(true, array.getJSONObject(0).get("bool"));
+
+        assertEquals("existing two", array.getJSONObject(1).get("txt"));
+        assertEquals(true, array.getJSONObject(1).get("bool"));
+
+        assertEquals("new one", array.getJSONObject(2).get("txt"));
+        assertEquals(false, array.getJSONObject(2).get("bool"));
+
     }
 
     // ========================================================================
@@ -143,9 +178,13 @@ public class RepeatableTest extends HudsonTestCase {
         f.getInputByValue("").setValueAttribute("txt two");
         f.getElementsByAttribute("INPUT", "type", "radio").get(3).click();
         submit(f);
-        assertEquals("[{\"radio\":\"two\",\"txt\":\"txt one\"},"
-                     + "{\"radio\":\"two\",\"txt\":\"txt two\"}]",
-                     formData.get("foos").toString());
+        JSONArray array = formData.getJSONArray("foos");
+        assertEquals("txt one", array.getJSONObject(0).get("txt"));
+        assertEquals("two", array.getJSONObject(0).get("radio"));
+
+        assertEquals("txt two", array.getJSONObject(1).get("txt"));
+        assertEquals("two", array.getJSONObject(1).get("radio"));
+
     }
 
     public static class FooRadio {
@@ -163,9 +202,20 @@ public class RepeatableTest extends HudsonTestCase {
         f.getInputByValue("").setValueAttribute("txt 4");
         f.getElementsByAttribute("INPUT", "type", "radio").get(7).click();
         submit(f);
-        assertEquals("[{\"radio\":\"one\",\"txt\":\"1\"},{\"radio\":\"two\",\"txt\":\"2\"},"
-                + "{\"radio\":\"one\",\"txt\":\"three\"},{\"radio\":\"two\",\"txt\":\"txt 4\"}]",
-                formData.get("foos").toString());
+
+        JSONArray array = formData.getJSONArray("foos");
+        assertEquals("1", array.getJSONObject(0).get("txt"));
+        assertEquals("one", array.getJSONObject(0).get("radio"));
+
+        assertEquals("2", array.getJSONObject(1).get("txt"));
+        assertEquals("two", array.getJSONObject(1).get("radio"));
+
+        assertEquals("three", array.getJSONObject(2).get("txt"));
+        assertEquals("one", array.getJSONObject(2).get("radio"));
+
+        assertEquals("txt 4", array.getJSONObject(3).get("txt"));
+        assertEquals("two", array.getJSONObject(3).get("radio"));
+
     }
 
     // hudson-behavior uniquifies radiobutton names so the browser properly handles each group,
@@ -183,9 +233,17 @@ public class RepeatableTest extends HudsonTestCase {
         f.getElementsByAttribute("INPUT", "type", "radio").get(2).click();
         f.getInputByValue("").setValueAttribute("avalue two");
         submit(f);
-        assertEquals("[{\"radio\":{\"b\":\"bvalue\",\"value\":\"two\"},\"txt\":\"txt one\"},"
-                     + "{\"radio\":{\"a\":\"avalue two\",\"value\":\"one\"},\"txt\":\"txt two\"}]",
-                     formData.get("foos").toString());
+        JSONArray array = formData.getJSONArray("foos");
+
+        assertEquals("txt one", array.getJSONObject(0).get("txt"));
+        JSONObject radio0 = array.getJSONObject(0).getJSONObject("radio");
+        assertEquals("bvalue", radio0.get("b"));
+        assertEquals("two", radio0.get("value"));
+
+        assertEquals("txt two", array.getJSONObject(1).get("txt"));
+        JSONObject radio1 = array.getJSONObject(1).getJSONObject("radio");
+        assertEquals("avalue two", radio1.get("a"));
+        assertEquals("one", radio1.get("value"));
     }
 
     // ========================================================================

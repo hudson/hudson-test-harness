@@ -38,7 +38,7 @@ public class TestResultExtensionTest extends HudsonTestCase {
     public void testTrivialRecorder() throws Exception {
         FreeStyleProject project = createFreeStyleProject("trivialtest");
         TrivialTestResultRecorder recorder = new TrivialTestResultRecorder();
-        project.getPublishersList().add(recorder);
+        project.addPublisher(recorder);
         project.getBuildersList().add(new TouchBuilder());
 
         FreeStyleBuild build = project.scheduleBuild2(0).get(5, TimeUnit.MINUTES); /* leave room for debugging*/

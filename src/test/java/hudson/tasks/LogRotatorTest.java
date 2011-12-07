@@ -16,11 +16,13 @@
 
 package hudson.tasks;
 
+import hudson.Extension;
 import hudson.Launcher;
+import hudson.maven.*;
 import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.model.Cause.LegacyCodeCause;
-import hudson.model.Descriptor;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
 import hudson.model.Run;
@@ -58,11 +60,12 @@ public class LogRotatorTest extends HudsonTestCase {
         FreeStyleProject project = createFreeStyleProject();
         project.setLogRotator(new LogRotator(-1, 2, -1, -1));
         assertEquals(Result.SUCCESS, build(project)); // #1
-        project.getPublishersList().replaceBy(Collections.singleton(new TestsFail()));
+        project.addPublisher(new TestsFail());
+
         assertEquals(Result.UNSTABLE, build(project)); // #2
         assertEquals(Result.UNSTABLE, build(project)); // #3
         assertEquals(1, numberOf(project.getLastStableBuild()));
-        project.getPublishersList().replaceBy(Collections.<Publisher>emptySet());
+        project.removePublisher(new TestsFail().getDescriptor());
         assertEquals(Result.SUCCESS, build(project)); // #4
         assertEquals(null, project.getBuildByNumber(1));
         assertEquals(null, project.getBuildByNumber(2));
@@ -72,7 +75,7 @@ public class LogRotatorTest extends HudsonTestCase {
     public void testArtifactDelete() throws Exception {
         FreeStyleProject project = createFreeStyleProject();
         project.setLogRotator(new LogRotator(-1, 6, -1, 2));
-        project.getPublishersList().replaceBy(Collections.singleton(new ArtifactArchiver("f", "", true)));
+        project.addPublisher(new ArtifactArchiver("f", "", true));
         assertEquals("(no artifacts)", Result.FAILURE, build(project)); // #1
         assertFalse(project.getBuildByNumber(1).getHasArtifacts());
         project.getBuildersList().replaceBy(Collections.singleton(new CreateArtifact()));
@@ -137,13 +140,21 @@ public class LogRotatorTest extends HudsonTestCase {
             return BuildStepMonitor.NONE;
         }
 
-        public Descriptor<Publisher> getDescriptor() {
-            return new Descriptor<Publisher>(TestsFail.class) {
-                public String getDisplayName() {
-                    return "TestsFail";
-                }
-            };
+        @Extension
+        public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
+            public DescriptorImpl() {
+            }
+
+            public String getDisplayName() {
+                return "TestsFail";
+            }
+
+            @Override
+            public boolean isApplicable(Class<? extends AbstractProject> jobType) {
+                return true;
+            }
         }
+
     }
 
 }
