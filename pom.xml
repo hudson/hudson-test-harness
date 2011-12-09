@@ -33,7 +33,7 @@
   <properties>
     <concurrency>1</concurrency> <!-- -1 means # of processors in the system -->
     <mavenDebug>false</mavenDebug>
-    <htmlunit.version>2.6-hudson-2</htmlunit.version>
+    <htmlunit.version>2.6-hudson-3</htmlunit.version>
     <embedded-rhino-debugger.version>1.2</embedded-rhino-debugger.version>
     <netx.version>0.5-hudson-2</netx.version>
     <mock-javamail.version>1.7</mock-javamail.version>
@@ -163,7 +163,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jvnet.hudson</groupId>
+      <groupId>org.hudsonci.tools</groupId>
       <artifactId>htmlunit</artifactId>
       <version>${htmlunit.version}</version>
       <exclusions>
