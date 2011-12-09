@@ -130,7 +130,7 @@ public class CaseResultTest extends HudsonTestCase {
 	m.setGoals("clean test");
 
 	MavenModuleSetBuild b = assertBuildStatus(Result.UNSTABLE, m.scheduleBuild2(0).get());
-	MavenBuild modBuild = (MavenBuild)b.getModuleLastBuilds().get(m.getModule("test:test"));
+	org.eclipse.hudson.legacy.maven.plugin.MavenBuild modBuild = b.getModuleLastBuilds().get(m.getModule("test:test"));
 	TestResult tr = modBuild.getAction(SurefireReport.class).getResult();
         assertEquals(1,tr.getFailedTests().size());
         CaseResult cr = tr.getFailedTests().get(0);
