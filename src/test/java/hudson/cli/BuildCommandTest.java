@@ -13,6 +13,8 @@
 #**************************************************************************/
 package hudson.cli;
 
+import hudson.model.ParameterValue;
+import hudson.model.StringParameterValue;
 import org.jvnet.hudson.test.HudsonTestCase;
 import hudson.tasks.Shell;
 import hudson.util.OneShotEvent;
@@ -39,7 +41,7 @@ public class BuildCommandTest extends HudsonTestCase {
     /**
      * Just schedules a build and return.
      */
-    void testAsync() throws IOException, InterruptedException {
+    public void testAsync() throws IOException, InterruptedException {
         FreeStyleProject p = createFreeStyleProject();
         final OneShotEvent started = new OneShotEvent();
         final OneShotEvent completed = new OneShotEvent();
@@ -63,7 +65,7 @@ public class BuildCommandTest extends HudsonTestCase {
     /**
      * Tests synchronous execution.
      */
-    void testSync() throws IOException, InterruptedException {
+    public void testSync() throws IOException, InterruptedException {
         FreeStyleProject p = createFreeStyleProject();
         p.getBuildersList().add(new Shell("sleep 3"));
 
@@ -71,12 +73,15 @@ public class BuildCommandTest extends HudsonTestCase {
         assertFalse(p.getBuildByNumber(1).isBuilding());
     }
 
-    void testParameters() throws IOException, InterruptedException, Exception {
+    public void testParameters() throws IOException, InterruptedException, Exception {
         FreeStyleProject p = createFreeStyleProject();
         p.addProperty(new ParametersDefinitionProperty(new StringParameterDefinition("key", null)));
 
         new CLI(getURL()).execute("build", "-s", "-p", "key=foobar", p.getName());
         FreeStyleBuild b = assertBuildStatusSuccess(p.getBuildByNumber(1));
-        assertEquals("foobar", b.getAction(ParametersAction.class).getParameter("key"));
+        ParameterValue parameter = b.getAction(ParametersAction.class).getParameter("key");
+        assertNotNull(parameter);
+        assertTrue(parameter instanceof StringParameterValue);
+        assertEquals("foobar", ((StringParameterValue) parameter).value);
     }
 }
