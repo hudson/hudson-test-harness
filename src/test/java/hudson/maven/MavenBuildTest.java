@@ -59,7 +59,7 @@ public class MavenBuildTest extends HudsonTestCase {
         configureDefaultMaven();
         MavenModuleSet m = createMavenProject();
         m.setGoals("clean install findbugs:findbugs");
-        m.setScm(new ExtractResourceSCM(getClass().getResource("maven-test-failure-findbugs.zip")));
+        m.setScm(new ExtractResourceSCM(m.getClass().getResource("maven-test-failure-findbugs.zip")));
         assertBuildStatus(Result.UNSTABLE, m.scheduleBuild2(0).get());
     }
 

@@ -191,7 +191,7 @@ public class RedeployPublisherTest extends HudsonTestCase {
         File repo = createTmpDir();
         FileUtils.cleanDirectory( repo );
         // a build with a failing unit tests
-        m2.setScm(new ExtractResourceSCM(getClass().getResource("maven-test-failure-findbugs.zip")));
+        m2.setScm(new ExtractResourceSCM(m2.getClass().getResource("maven-test-failure-findbugs.zip")));
         m2.getPublishersList().add(new RedeployPublisher("",repo.toURI().toString(),false, true));
 
         MavenModuleSetBuild b = m2.scheduleBuild2(0).get();
