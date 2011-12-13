@@ -14,6 +14,8 @@
 
 package hudson.model;
 
+import java.lang.reflect.Field;
+import org.jvnet.hudson.test.Bug;
 import org.jvnet.hudson.test.HudsonTestCase;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
@@ -95,5 +97,20 @@ public class HelpLinkTest extends HudsonTestCase {
         } finally {
             Publisher.all().remove(d);
         }
+    }
+
+    /**
+     * Verify null/invalid primaryView setting doesn't result in infinite loop.
+     */
+    @Bug(6938)
+    public void testInvalidPrimaryView() throws Exception {
+        Field pv = Hudson.class.getDeclaredField("primaryView");
+        pv.setAccessible(true);
+        String value = null;
+        pv.set(hudson, value);
+        assertNull("null primaryView", hudson.getView(value));
+        value = "some bogus name";
+        pv.set(hudson, value);
+        assertNull("invalid primaryView", hudson.getView(value));
     }
 }

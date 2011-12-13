@@ -114,38 +114,7 @@ public class EnvironmentVariableNodePropertyTest extends HudsonTestCase {
 		Assert.assertEquals("value", envVars.get("KEY2"));
 	}
 	
-	public void testFormRoundTripForMaster() throws Exception {
-        hudson.getGlobalNodeProperties().replaceBy(
-                Collections.singleton(new EnvironmentVariablesNodeProperty(
-                        new Entry("KEY", "value"))));
-		
-		WebClient webClient = new WebClient();
-		HtmlPage page = webClient.getPage(hudson, "configure");
-		HtmlForm form = page.getFormByName("config");
-		submit(form);
-		
-		Assert.assertEquals(1, hudson.getGlobalNodeProperties().toList().size());
-		
-		EnvironmentVariablesNodeProperty prop = hudson.getGlobalNodeProperties().get(EnvironmentVariablesNodeProperty.class);
-		Assert.assertEquals(1, prop.getEnvVars().size());
-		Assert.assertEquals("value", prop.getEnvVars().get("KEY"));
-	}
 
-	public void testFormRoundTripForSlave() throws Exception {
-		setVariables(slave, new Entry("KEY", "value"));
-		
-		WebClient webClient = new WebClient();
-		HtmlPage page = webClient.getPage(slave, "configure");
-		HtmlForm form = page.getFormByName("config");
-		submit(form);
-		
-		Assert.assertEquals(1, slave.getNodeProperties().toList().size());
-		
-		EnvironmentVariablesNodeProperty prop = slave.getNodeProperties().get(EnvironmentVariablesNodeProperty.class);
-		Assert.assertEquals(1, prop.getEnvVars().size());
-		Assert.assertEquals("value", prop.getEnvVars().get("KEY"));
-	}
-	
 	// //////////////////////// setup //////////////////////////////////////////
 
 	public void setUp() throws Exception {

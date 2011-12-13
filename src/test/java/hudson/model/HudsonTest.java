@@ -168,18 +168,4 @@ public class HudsonTest extends HudsonTestCase {
         assertNull(hudson.getDescriptor(HudsonTest.class.getName()));
     }
 
-    /**
-     * Verify null/invalid primaryView setting doesn't result in infinite loop.
-     */
-    @Bug(6938)
-    public void testInvalidPrimaryView() throws Exception {
-        Field pv = Hudson.class.getDeclaredField("primaryView");
-        pv.setAccessible(true);
-        String value = null;
-        pv.set(hudson, value);
-        assertNull("null primaryView", hudson.getView(value));
-        value = "some bogus name";
-        pv.set(hudson, value);
-        assertNull("invalid primaryView", hudson.getView(value));
-    }
 }
