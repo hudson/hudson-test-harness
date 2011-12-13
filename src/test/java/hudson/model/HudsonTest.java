@@ -39,6 +39,7 @@ import org.jvnet.hudson.test.Email;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.jvnet.hudson.test.recipes.LocalData;
 
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 
 /**
@@ -142,7 +143,7 @@ public class HudsonTest extends HudsonTestCase {
             wc.getPage(req);
             fail("Error code expected");
         } catch (FailingHttpStatusCodeException e) {
-            assertEquals(SC_FORBIDDEN,e.getStatusCode());
+            assertEquals(SC_BAD_REQUEST, e.getStatusCode());
         }
 
         // the master computer object should be still here
