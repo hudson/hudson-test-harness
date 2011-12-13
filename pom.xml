@@ -24,7 +24,6 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.eclipse.hudson.main</groupId>
   <artifactId>hudson-test-harness</artifactId>
-  <packaging>stapler-jar</packaging>
   <name>Hudson :: Test Harness</name>
   <description>
     Unit test harness (src/main) and Unit tests for Hudson core (src/test)
