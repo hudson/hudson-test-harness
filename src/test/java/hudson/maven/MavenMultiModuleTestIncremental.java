@@ -19,6 +19,7 @@ import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.tasks.Maven.MavenInstallation;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.jvnet.hudson.test.Bug;
@@ -150,6 +151,18 @@ public class MavenMultiModuleTestIncremental extends HudsonTestCase {
             }
         }
     }
+
+    @Bug(7261)
+    public void testAbsolutePathPom() throws Exception {
+        File pom = new File(this.getClass().getResource("test-pom-7162.xml").toURI());
+        MavenModuleSet project = createMavenProject();
+        MavenInstallation mi = configureDefaultMaven();
+        project.setMaven(mi.getName());
+        project.setRootPOM(pom.getAbsolutePath());
+        project.setGoals("install");
+        buildAndAssertSuccess(project);
+    }
+
 
     private static class TestReporter extends MavenReporter {
         @Override

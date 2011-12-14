@@ -127,14 +127,4 @@ public class MavenProjectTest extends HudsonTestCase {
         assertEquals(1, project.getModule("org.jvnet.hudson.main.test.multimod:moduleA").getBuilds().size());
         assertEquals(1, project.getModule("org.jvnet.hudson.main.test.multimod:moduleB").getBuilds().size());
     }
-    @Bug(7261)
-    public void testAbsolutePathPom() throws Exception {
-        File pom = new File(this.getClass().getResource("test-pom-7162.xml").toURI());
-        MavenModuleSet project = createMavenProject();
-        MavenInstallation mi = configureDefaultMaven();
-        project.setMaven(mi.getName());
-        project.setRootPOM(pom.getAbsolutePath());
-        project.setGoals("install");
-        buildAndAssertSuccess(project);
-    }
 }
